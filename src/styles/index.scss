@@ -1,0 +1,11 @@
+// @import "node_modules/bootstrap/scss/bootstrap";
+$primary: #ffbbbb;
+
+$theme-colors: (
+  "primary": tomato,
+  "secondary": teal,
+);
+
+$body-color: #111;
+
+@import "~bootstrap/scss/bootstrap";
