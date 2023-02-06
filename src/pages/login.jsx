@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 // import { useQuery, gql, useMutation } from "@apollo/client";
 import axios from "axios";
-// import { cookies } from "next/headers";
+import { appContext } from "@/context/store";
 
 // const LOGIN = gql`
 //   mutation signin {
@@ -13,23 +13,30 @@ import axios from "axios";
 // `;
 
 export default function Login() {
+  //   const [doLogIn, { data, loading, error }] = useMutation(LOGIN);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
-  //   const nextCookies = cookies();
+  const { setIsLoggedIn } = useContext(appContext);
 
-  //   const [doLogIn, { data, loading, error }] = useMutation(LOGIN);
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (e) => {
+    e.preventDefault();
     axios
       .post("http://localhost:3000/api/login", {
         identifier: login,
         password: password,
       })
       .then((response) => {
-        // console.log(response.headers);
-        // console.log("User profile: ", response.data);
-        // console.log("User token: ", response.data);
+        if (response.data.loggedIn) {
+          setIsLoggedIn(true);
+        }
         process.env.SECRET = response.data.jwt;
       })
       .catch((error) => {
@@ -37,39 +44,41 @@ export default function Login() {
       });
   };
 
+  const handleSignOut = async () => {
+    axios.post("http://localhost:3000/api/logout").then((response) => {
+      alert("Logged out");
+    });
+  };
+
   return (
-    <div className="input-group mb-3">
-      <span className="input-group-text" id="basic-addon1">
-        @
-      </span>
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Username"
-        aria-label="Username"
-        aria-describedby="basic-addon1"
-        onChange={(e) => setLogin(e.target.value)}
-      ></input>
-      <span className="input-group-text" id="basic-addon1">
-        @
-      </span>
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Password"
-        aria-label="Password"
-        aria-describedby="basic-addon1"
-        onChange={(e) => setPassword(e.target.value)}
-      ></input>
-      <Button variant="info" onClick={handleSignIn}>
-        Login
-      </Button>
-      {/* {nextCookies.getAll().map((cookie) => (
-        <div key={cookie.name}>
-          <p>Name: {cookie.name}</p>
-          <p>Value: {cookie.value}</p>
-        </div>
-      ))} */}
-    </div>
+    <form action="" onSubmit={(e) => handleSignIn(e)}>
+      <div className="input-group mb-3">
+        <span className="input-group-text" id="basic-addon1">
+          @
+        </span>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Username"
+          aria-label="Username"
+          aria-describedby="basic-addon1"
+          onChange={(e) => setLogin(e.target.value)}
+        ></input>
+        <span className="input-group-text" id="basic-addon1">
+          Password
+        </span>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Password"
+          aria-label="Password"
+          aria-describedby="basic-addon1"
+          onChange={(e) => setPassword(e.target.value)}
+        ></input>
+        <Button variant="primary" type="submit">
+          Login
+        </Button>
+      </div>
+    </form>
   );
 }

@@ -9,12 +9,11 @@ export default async function handler(req, res) {
         req.body.identifier,
         req.body.password,
       );
-      //   res.send({ message: `jwt: ${response.data.jwt}` });
       const cookies = new Cookies(req, res);
 
       cookies.set("Authorization", response.data.jwt, { httpOnly: true });
 
-      res.send({ message: "success@" });
+      res.send({ message: "success@", loggedIn: true });
     } catch (e) {
       console.log("error:", e);
       return res.send({ message: "Sent message failed" });

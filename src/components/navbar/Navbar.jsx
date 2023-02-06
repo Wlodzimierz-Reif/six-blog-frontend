@@ -1,4 +1,7 @@
+import LogoutHandler from "@/authorisation/LogoutHandler";
+import { appContext } from "@/context/store";
 import Link from "next/link";
+import { useContext } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -7,6 +10,12 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
 function NavbarComponent() {
+  const { isLoggedIn, setIsLoggedIn } = useContext(appContext);
+
+  const handleLogut = () => {
+    LogoutHandler();
+    setIsLoggedIn(false);
+  };
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
@@ -40,7 +49,7 @@ function NavbarComponent() {
               Link
             </Nav.Link>
           </Nav>
-          <Form className="d-flex">
+          {/* <Form className="d-flex">
             <Form.Control
               type="search"
               placeholder="Search"
@@ -48,7 +57,12 @@ function NavbarComponent() {
               aria-label="Search"
             />
             <Button variant="outline-success">Search</Button>
-          </Form>
+          </Form> */}
+          <Link href={isLoggedIn ? "/" : "/login"}>
+            <Button onClick={isLoggedIn ? handleLogut : () => {}}>
+              {isLoggedIn ? "Logout" : "Login"}
+            </Button>
+          </Link>
         </Navbar.Collapse>
       </Container>
     </Navbar>
